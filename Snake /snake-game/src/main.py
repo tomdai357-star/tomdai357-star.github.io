@@ -12,7 +12,6 @@ def load_sound(path, fallback_freq=440, duration_ms=120, volume=0.6):
     try:
         return pygame.mixer.Sound(path)
     except Exception:
-        # try synthesizing a tone if numpy is available
         try:
             import numpy as np
             freq = 44100
@@ -49,6 +48,11 @@ def main():
     food = Food(SCREEN_WIDTH, SCREEN_HEIGHT, BLOCK_SIZE)
     score = 0
 
+    # base speed and dynamic game speed (increase 5% every 10 apples)
+    base_speed = SNAKE_SPEED
+    game_speed = base_speed
+    prev_speed_level = 0
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -71,6 +75,9 @@ def main():
                     snake = Snake(block_size=BLOCK_SIZE)
                     food = Food(SCREEN_WIDTH, SCREEN_HEIGHT, BLOCK_SIZE)
                     score = 0
+                    # reset speed tracking
+                    game_speed = base_speed
+                    prev_speed_level = 0
 
                 # quick quit
                 elif event.key == pygame.K_ESCAPE:
@@ -100,6 +107,9 @@ def main():
             snake = Snake(block_size=BLOCK_SIZE)
             food = Food(SCREEN_WIDTH, SCREEN_HEIGHT, BLOCK_SIZE)
             score = 0
+            # reset speed tracking on game over
+            game_speed = base_speed
+            prev_speed_level = 0
             continue
 
         if check_collisions(snake, food):
@@ -114,6 +124,14 @@ def main():
             # only reset food position
             food.reset_food()
 
+            # --- increase speed 5% every 10 apples ---
+            level = score // 10
+            if level > prev_speed_level:
+                prev_speed_level = level
+                # multiplicative scaling
+                game_speed = max(1, int(round(base_speed * (1.05 ** level))))
+            # --- end speed scaling ---
+
         screen.fill((0, 0, 0))  # Clear the screen
         snake.render(screen)
         food.render(screen)
@@ -127,10 +145,10 @@ def main():
             pass
 
         pygame.display.flip()
-        clock.tick(SNAKE_SPEED)
+        # use dynamic game_speed (updated every 10 apples)
+        clock.tick(game_speed)
 
     pygame.quit()
 
 if __name__ == "__main__":
     main()
-# ...existing code...
