@@ -5,12 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reddit Clone — Landing</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .modal-overlay {
+      transition: opacity 0.25s ease;
+    }
+    /* Style for the clickable subreddit names in posts */
+    .subreddit-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
+
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 modal-overlay px-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-8 relative shadow-2xl">
+      <button onclick="toggleModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+
+      <div class="text-center">
+        <div class="h-12 w-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-4 text-xl">R</div>
+        <h2 id="modal-title" class="text-2xl font-bold mb-2">Log In</h2>
+        <p class="text-gray-500 text-sm mb-6">By continuing, you are setting up a RedditClone account and agree to our User Agreement.</p>
+      </div>
+
+      <div class="space-y-3 mb-6">
+        <button class="w-full flex items-center justify-center gap-3 py-2.5 border border-gray-300 rounded-full font-semibold hover:bg-gray-50 transition">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pjax/google.png" class="w-5" alt="Google">
+          Continue with Google
+        </button>
+      </div>
+
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1 h-px bg-gray-200"></div>
+        <span class="text-xs text-gray-400 font-bold uppercase">OR</span>
+        <div class="flex-1 h-px bg-gray-200"></div>
+      </div>
+
+      <form onsubmit="event.preventDefault(); alert('Sign in attempted!');" class="space-y-4">
+        <input type="email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" />
+        <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition">Continue</button>
+      </form>
+    </div>
+  </div>
+
   <header class="sticky top-0 z-30 bg-white border-b border-gray-200">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center h-16 gap-4">
-        <div class="flex items-center gap-3 shrink-0">
+        <div class="flex items-center gap-3 shrink-0 cursor-pointer" onclick="renderPosts('all')">
           <div class="h-8 w-8 bg-indigo-600 rounded flex items-center justify-center text-white font-bold">R</div>
           <span class="font-semibold text-lg hidden md:block">RedditClone</span>
         </div>
@@ -23,8 +65,8 @@
         </div>
 
         <div class="flex items-center gap-2 ml-auto">
-          <button class="hidden sm:inline px-4 py-1.5 text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50">Log In</button>
-          <button class="px-4 py-1.5 text-sm font-semibold rounded-full bg-indigo-600 text-white hover:bg-indigo-700">Sign Up</button>
+          <button onclick="toggleModal('Log In')" class="hidden sm:inline px-4 py-1.5 text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50">Log In</button>
+          <button onclick="toggleModal('Sign Up')" class="px-4 py-1.5 text-sm font-semibold rounded-full bg-indigo-600 text-white hover:bg-indigo-700">Sign Up</button>
         </div>
       </div>
     </div>
@@ -34,71 +76,39 @@
     <div class="flex flex-col md:flex-row gap-6">
       
       <main class="w-full md:w-[65%] lg:w-[70%] space-y-4">
-        
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <h1 class="text-xl font-bold">Trending posts</h1>
           <p class="text-sm text-gray-500">Discover what's popular right now.</p>
         </div>
-
-        <div class="space-y-4">
-          
-          <article class="bg-white rounded-lg border border-gray-200 hover:border-gray-400 transition-colors cursor-pointer">
-            <div class="flex items-center gap-2 p-3 pb-1">
-              <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
-              <span class="text-xs font-bold">r/programming</span>
-              <span class="text-xs text-gray-500">• Posted by u/engineer_tom 5h ago</span>
-            </div>
-            <div class="px-3 py-2">
-              <h2 class="text-lg font-semibold mb-2">Building a custom stock engine with Python and DuckDB</h2>
-              <div class="w-full bg-gray-200 rounded-md aspect-video flex items-center justify-center text-gray-400">
-                [Post Image Placeholder]
-              </div>
-            </div>
-            <div class="flex items-center gap-1 p-2 bg-gray-50 rounded-b-lg">
-              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-600">Upvote</button>
-              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-600">Comment</button>
-              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-600">Share</button>
-            </div>
-          </article>
-
-          <article class="bg-white rounded-lg border border-gray-200 hover:border-gray-400 transition-colors cursor-pointer">
-            <div class="flex items-center gap-2 p-3 pb-1">
-              <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
-              <span class="text-xs font-bold">r/classicalmusic</span>
-              <span class="text-xs text-gray-500">• Posted by u/pianist_26 2h ago</span>
-            </div>
-            <div class="px-3 py-2">
-              <h2 class="text-lg font-semibold mb-2">Tips for mastering Mozart's Piano Sonata No. 10 (K. 330)?</h2>
-              <p class="text-sm text-gray-700">I'm currently working through the first movement and looking for advice on the phrasing...</p>
-            </div>
-            <div class="flex items-center gap-1 p-2 bg-gray-50 rounded-b-lg">
-              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-600">Upvote</button>
-              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-600">Comment</button>
-              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-600">Share</button>
-            </div>
-          </article>
-
-        </div>
+        <div id="post-feed" class="space-y-4"></div>
       </main>
 
       <aside class="hidden md:block w-[35%] lg:w-[30%] space-y-4">
         <div class="sticky top-20 space-y-4">
           <div class="bg-white rounded-lg border border-gray-200 p-4">
             <h3 class="font-bold text-sm mb-2">About Community</h3>
-            <p class="text-xs text-gray-600 mb-4">Welcome to the RedditClone project. A place to practice Tailwind and Git.</p>
-            <button class="w-full py-2 bg-indigo-600 text-white rounded-full font-bold text-sm">Create Post</button>
+            <p class="text-xs text-gray-600 mb-4">Click a post header or a community link to filter the feed.</p>
+            <button onclick="toggleModal('Sign Up')" class="w-full py-2 bg-indigo-600 text-white rounded-full font-bold text-sm">Create Post</button>
           </div>
           <div class="bg-white rounded-lg border border-gray-200 p-4">
             <h3 class="font-bold text-sm mb-2">Top Communities</h3>
-            <ul class="space-y-3">
-              <li class="flex items-center gap-2 text-xs font-bold"><div class="w-4 h-4 bg-orange-400 rounded-full"></div> r/civilengineering</li>
-              <li class="flex items-center gap-2 text-xs font-bold"><div class="w-4 h-4 bg-blue-400 rounded-full"></div> r/utoronto</li>
-              <li class="flex items-center gap-2 text-xs font-bold"><div class="w-4 h-4 bg-green-400 rounded-full"></div> r/investing</li>
+            <ul id="community-list" class="space-y-1">
+              <li class="flex items-center gap-2 text-xs font-bold p-2 hover:bg-gray-100 rounded cursor-pointer transition">
+                <div class="w-4 h-4 bg-orange-400 rounded-full"></div> r/civilengineering
+              </li>
+              <li class="flex items-center gap-2 text-xs font-bold p-2 hover:bg-gray-100 rounded cursor-pointer transition">
+                <div class="w-4 h-4 bg-blue-400 rounded-full"></div> r/utoronto
+              </li>
+              <li class="flex items-center gap-2 text-xs font-bold p-2 hover:bg-gray-100 rounded cursor-pointer transition">
+                <div class="w-4 h-4 bg-green-400 rounded-full"></div> r/investing
+              </li>
+              <li class="flex items-center gap-2 text-xs font-bold p-2 hover:bg-gray-100 rounded cursor-pointer transition">
+                <div class="w-4 h-4 bg-purple-400 rounded-full"></div> r/programming
+              </li>
             </ul>
           </div>
         </div>
       </aside>
-
     </div>
   </div>
 
@@ -107,5 +117,84 @@
       © 2026 RedditClone — Built for Engineering Portfolio
     </div>
   </footer>
+
+  <script>
+    // --- AUTH LOGIC ---
+    const modal = document.getElementById('auth-modal');
+    const modalTitle = document.getElementById('modal-title');
+
+    function toggleModal(type = 'Log In') {
+      if (modal.classList.contains('hidden')) {
+        modalTitle.innerText = type;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) toggleModal();
+    }
+
+    // --- FEED LOGIC ---
+    const allPosts = [
+      { community: 'r/programming', title: 'Building a custom stock engine with Python and DuckDB', author: 'engineer_tom', time: '5h', type: 'image' },
+      { community: 'r/civilengineering', title: 'Best practices for HEC-HMS modeling in urban areas?', author: 'water_res', time: '1h', type: 'text', content: 'Anyone have tips for subbasin routing?' },
+      { community: 'r/utoronto', title: 'Bahen Center is absolutely packed today', author: 'uoft_student', time: '30m', type: 'image' },
+      { community: 'r/investing', title: 'Copper prices hitting new highs - thoughts?', author: 'resource_trader', time: '10h', type: 'text', content: 'Watching the supply side closely.' },
+      { community: 'r/programming', title: 'Tailwind vs Bootstrap in 2026', author: 'web_dev', time: '8h', type: 'text', content: 'Discussing why utility-first CSS is winning.' }
+    ];
+
+    const feedContainer = document.getElementById('post-feed');
+
+    function renderPosts(filter = 'all') {
+      feedContainer.innerHTML = '';
+      const filtered = filter === 'all' ? allPosts : allPosts.filter(p => p.community === filter);
+
+      filtered.forEach(post => {
+        const postHTML = `
+          <article class="bg-white rounded-lg border border-gray-200 shadow-sm">
+            <div class="flex items-center gap-2 p-3 pb-1">
+              <div class="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center text-[10px] font-bold text-indigo-600">R</div>
+              
+              <span 
+                onclick="event.stopPropagation(); renderPosts('${post.community}')" 
+                class="subreddit-link text-xs font-bold cursor-pointer hover:text-indigo-600"
+              >
+                ${post.community}
+              </span>
+              
+              <span class="text-xs text-gray-500">• Posted by u/${post.author} ${post.time} ago</span>
+            </div>
+
+            <div class="px-3 py-2 cursor-pointer hover:bg-gray-50 transition" onclick="alert('Opening post detail...')">
+              <h2 class="text-lg font-semibold mb-2">${post.title}</h2>
+              ${post.type === 'image' 
+                ? '<div class="w-full bg-gray-200 rounded-md aspect-video flex items-center justify-center text-gray-400 text-xs font-mono border border-gray-300">[Post Image Content]</div>' 
+                : `<p class="text-sm text-gray-700 leading-relaxed">${post.content}</p>`
+              }
+            </div>
+
+            <div class="flex items-center gap-1 p-2 bg-gray-50 rounded-b-lg border-t border-gray-100">
+              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-500 transition">↑ Upvote</button>
+              <button class="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded text-xs font-bold text-gray-500 transition">💬 Comment</button>
+            </div>
+          </article>
+        `;
+        feedContainer.insertAdjacentHTML('beforeend', postHTML);
+      });
+    }
+
+    document.querySelectorAll('#community-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const communityName = item.innerText.trim();
+        renderPosts(communityName);
+      });
+    });
+
+    renderPosts('all');
+  </script>
 </body>
 </html>
